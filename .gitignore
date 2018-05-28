@@ -1,0 +1,13 @@
+### Mac
+.DS_Store
+._*
+
+### IntelliJ IDEA / PyCharm
+.idea
+*.iml
+*.iws
+
+### Python
+__pycache__/**
+*.py[cdo]
+*$py.class
