@@ -48,6 +48,9 @@ class Config(object):
 
     DEFAULT_DLV = "src/main/resources/dlv.i386-apple-darwin.bin"
     """str: Default value for :attr:`dlv`."""
+    
+    DEFAULT_MAX_TREE_SIZE = 48
+    """int: An upper bound on the total number of people that may appear in a family tree."""
 
     DEFAULT_OUTPUT_DIR = "./out"
     """str: Default value for :attr:`output_dir`."""
@@ -60,10 +63,11 @@ class Config(object):
     def __init__(self):
         """Creates a new instance of ``Config``."""
         self._dlv = self.DEFAULT_DLV
+        self._max_tree_size = self.DEFAULT_MAX_TREE_SIZE
         self._output_dir = self.DEFAULT_OUTPUT_DIR
         self._quiet = self.DEFAULT_QUIET
         self._seed = random.randrange(100000)  # -> we randomly generate a default seed to ensure reproducibility
-        self._size = None
+        self._num_samples = None
 
     #  PROPERTIES  #####################################################################################################
 
@@ -82,6 +86,28 @@ class Config(object):
         if not os.path.isfile(dlv):
             raise ValueError("The provided path <dlv> does not exist: '{}'!".format(dlv))
         self._dlv = dlv
+    
+    @property
+    def max_tree_size(self) -> int:
+        """int: The maximum number of people that may appear in a family tree."""
+        return self._max_tree_size
+    
+    @max_tree_size.setter
+    def max_tree_size(self, max_tree_size: int) -> None:
+        insanity.sanitize_type("max_tree_size", max_tree_size, int)
+        insanity.sanitize_range("max_tree_size", max_tree_size, minimum=1)
+        self._max_tree_size = max_tree_size
+
+    @property
+    def num_samples(self) -> typing.Union[int, None]:
+        """int: The size of the dataset to generate."""
+        return self._num_samples
+
+    @num_samples.setter
+    def num_samples(self, num_samples: int) -> None:
+        insanity.sanitize_type("num_samples", num_samples, int)
+        insanity.sanitize_range("num_samples", num_samples, minimum=1)
+        self._num_samples = num_samples
 
     @property
     def output_dir(self) -> str:
@@ -111,14 +137,3 @@ class Config(object):
     def seed(self, seed: int) -> None:
         insanity.sanitize_type("seed", seed, int)
         self._seed = seed
-
-    @property
-    def size(self) -> typing.Union[int, None]:
-        """int: The size of the dataset to generate."""
-        return self._size
-
-    @size.setter
-    def size(self, size: int) -> None:
-        insanity.sanitize_type("size", size, int)
-        insanity.sanitize_range("size", size, minimum=1)
-        self._size = size
