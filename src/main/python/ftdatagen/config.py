@@ -50,7 +50,10 @@ class Config(object):
     """str: Default value for :attr:`dlv`."""
     
     DEFAULT_MAX_TREE_SIZE = 48
-    """int: An upper bound on the total number of people that may appear in a family tree."""
+    """int: Default value of :attr:`max_tree_size`."""
+    
+    DEFAULT_NEGATIVE_FACTS = False
+    """bool: Default value of :attr:`negative_facts`."""
 
     DEFAULT_OUTPUT_DIR = "./out"
     """str: Default value for :attr:`output_dir`."""
@@ -64,10 +67,11 @@ class Config(object):
         """Creates a new instance of ``Config``."""
         self._dlv = self.DEFAULT_DLV
         self._max_tree_size = self.DEFAULT_MAX_TREE_SIZE
+        self._negative_facts = self.DEFAULT_NEGATIVE_FACTS
+        self._num_samples = None
         self._output_dir = self.DEFAULT_OUTPUT_DIR
         self._quiet = self.DEFAULT_QUIET
         self._seed = random.randrange(100000)  # -> we randomly generate a default seed to ensure reproducibility
-        self._num_samples = None
 
     #  PROPERTIES  #####################################################################################################
 
@@ -97,6 +101,15 @@ class Config(object):
         insanity.sanitize_type("max_tree_size", max_tree_size, int)
         insanity.sanitize_range("max_tree_size", max_tree_size, minimum=1)
         self._max_tree_size = max_tree_size
+    
+    @property
+    def negative_facts(self) -> bool:
+        """bool: Specifies whether to include negative parentOf relations as facts."""
+        return self._negative_facts
+    
+    @negative_facts.setter
+    def negative_facts(self, negative_facts: bool) -> None:
+        self._negative_facts = bool(negative_facts)
 
     @property
     def num_samples(self) -> typing.Union[int, None]:
