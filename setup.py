@@ -49,7 +49,8 @@ setup(
         ],
         copyright="Copyright (c) 2018 Patrick Hohenecker",
         data_files=[
-                (".", ["LICENSE", "README.md"])
+                (".", ["LICENSE", "README.md"]),
+                ("src/main/asp", ["ontology.asp"])
         ],
         description="A dataset generator for family tree data.",
         download_url="https://github.com/phohenecker/family-tree-data-gen/archive/v2018.1.tar.gz",
