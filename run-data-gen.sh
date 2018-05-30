@@ -31,4 +31,4 @@
 
 
 export PYTHONPATH="`pwd`/src/main/python:${PYTHONPATH}"
-python3 -m toydatagen "${@}"
+python3 -m ftdatagen "${@}"
