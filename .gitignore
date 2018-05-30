@@ -1,3 +1,6 @@
+### default output directory
+out
+
 ### Mac
 .DS_Store
 ._*
