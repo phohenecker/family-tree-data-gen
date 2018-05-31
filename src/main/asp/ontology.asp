@@ -26,9 +26,21 @@
 % date:     May 30, 2018
 
 
-person(X) :- parentOf(X, Y)                 .  % the predicate person is needed in order to allow for the use of the
-person(Y) :- parentOf(X, Y)                 .  % default negation rules that are specified at the end
-          :- parentOf(X, Y), parentOf(Y, X) .
+% The predicate person is needed in order to allow for the use of the default negation rules that are specified at the
+% end. However, as we only consider individuals representing persons, this predicate does not provide any insights.
+
+person(X) :- male(X)        .
+person(X) :- female(X)      .
+person(X) :- parentOf(X, Y) .
+person(Y) :- parentOf(X, Y) .
+
+
+%%%%%%%% SAFETY RULES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+:- ~person(X)                     .
+:- male(X), female(X)             .
+:- ~male(X), ~female(X)           .
+:- parentOf(X, Y), parentOf(Y, X) .
 
 
 %%%%%%%% GENDERS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -57,92 +69,92 @@ nieceNephewOf(X, Y)     :- auntUncleOf(Y, X)        .
 
 %%%% Other/Sideways Relationships --------------------------------------------------------------------------------------
 
-siblingOf(X, Y)               :- siblingOf(Y, X)                         .
-siblingOf(X, Y)               :- parentOf(Z, X), parentOf(Z, Y), X<>Y    .
+siblingOf(X, Y)                :- siblingOf(Y, X)                         .
+siblingOf(X, Y)                :- parentOf(Z, X), parentOf(Z, Y), X<>Y    .
 
-cousinOf(X, Y)                :- cousinOf(Y, X)                          .
-cousinOf(X, Y)                :- parentOf(Z, X), auntUncleOf(Z, Y)       .
-secondCousinOf(X, Y)          :- secondCousinOf(Y, X)                    .
-secondCousinOf(X, Y)          :- parentOf(Z, X), secondAuntUncleOf(Z, Y) .
-firstCousinOnceRemoved(X, Y)  :- cousinOf(Y, Z), parentOf(Z, X)          .  % german: Nichte/Neffe 2. Grades
+cousinOf(X, Y)                 :- cousinOf(Y, X)                          .
+cousinOf(X, Y)                 :- parentOf(Z, X), auntUncleOf(Z, Y)       .
+secondCousinOf(X, Y)           :- secondCousinOf(Y, X)                    .
+secondCousinOf(X, Y)           :- parentOf(Z, X), secondAuntUncleOf(Z, Y) .
+firstCousinOnceRemovedOf(X, Y) :- cousinOf(Y, Z), parentOf(Z, X)          .  % german: Nichte/Neffe 2. Grades
 
 
 %%%%%%%% GENDERED RELATIONSHIPS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-sisterOf(X, Y)                   :- siblingOf(X, Y), female(X)              .
-brotherOf(X, Y)                  :- siblingOf(X, Y), male(X)                .
-motherOf(X, Y)                   :- parentOf(X, Y), female(X)               .
-fatherOf(X, Y)                   :- parentOf(X, Y), male(X)                 .
-grandmotherOf(X, Y)              :- grandparentOf(X, Y), female(X)          .
-grandfatherOf(X, Y)              :- grandparentOf(X, Y), male(X)            .
-greatGrandmotherOf(X, Y)         :- greatGrandparentOf(X, Y), female(X)     .
-greatGrandfatherOf(X, Y)         :- greatGrandparentOf(X, Y), male(X)       .
+sisterOf(X, Y)                     :- siblingOf(X, Y), female(X)                .
+brotherOf(X, Y)                    :- siblingOf(X, Y), male(X)                  .
+motherOf(X, Y)                     :- parentOf(X, Y), female(X)                 .
+fatherOf(X, Y)                     :- parentOf(X, Y), male(X)                   .
+grandmotherOf(X, Y)                :- grandparentOf(X, Y), female(X)            .
+grandfatherOf(X, Y)                :- grandparentOf(X, Y), male(X)              .
+greatGrandmotherOf(X, Y)           :- greatGrandparentOf(X, Y), female(X)       .
+greatGrandfatherOf(X, Y)           :- greatGrandparentOf(X, Y), male(X)         .
 
-auntOf(X, Y)                     :- auntUncleOf(X, Y), female(X)            .
-uncleOf(X, Y)                    :- auntUncleOf(X, Y), male(X)              .
-greatAuntOf(X, Y)                :- greatAuntUncleOf(X, Y), female(X)       .
-greatUncleOf(X, Y)               :- greatAuntUncleOf(X, Y), male(X)         .
-secondAuntOf(X, Y)               :- secondAuntUncleOf(X, Y), female(X)      .
-secondUncleOf(X, Y)              :- secondAuntUncleOf(X, Y), male(X)        .
+auntOf(X, Y)                       :- auntUncleOf(X, Y), female(X)              .
+uncleOf(X, Y)                      :- auntUncleOf(X, Y), male(X)                .
+greatAuntOf(X, Y)                  :- greatAuntUncleOf(X, Y), female(X)         .
+greatUncleOf(X, Y)                 :- greatAuntUncleOf(X, Y), male(X)           .
+secondAuntOf(X, Y)                 :- secondAuntUncleOf(X, Y), female(X)        .
+secondUncleOf(X, Y)                :- secondAuntUncleOf(X, Y), male(X)          .
 
-girlCousinOf(X, Y)               :- cousinOf(X, Y), female(X)               .
-boyCousinOf(X, Y)                :- cousinOf(X, Y), male(X)                 .
-girlSecondCousinOf(X, Y)         :- secondCousinOf(X, Y), female(X)         .
-boySecondCousinOf(X, Y)          :- secondCousinOf(X, Y), male(X)           .
-girlFirstCousinOnceRemoved(X, Y) :- firstCousinOnceRemoved(X, Y), female(X) .
-boyFirstCousinOnceRemoved(X, Y)  :- firstCousinOnceRemoved(X, Y), male(X)   .
+girlCousinOf(X, Y)                 :- cousinOf(X, Y), female(X)                 .
+boyCousinOf(X, Y)                  :- cousinOf(X, Y), male(X)                   .
+girlSecondCousinOf(X, Y)           :- secondCousinOf(X, Y), female(X)           .
+boySecondCousinOf(X, Y)            :- secondCousinOf(X, Y), male(X)             .
+girlFirstCousinOnceRemovedOf(X, Y) :- firstCousinOnceRemovedOf(X, Y), female(X) .
+boyFirstCousinOnceRemovedOf(X, Y)  :- firstCousinOnceRemovedOf(X, Y), male(X)   .
 
-daughterOf(X, Y)                 :- childOf(Y, X), female(X)                .
-sonOf(X, Y)                      :- childOf(Y, X), male(X)                  .
-granddaughterOf(X, Y)            :- grandchildOf(Y, X), female(X)           .
-grandsonOf(X, Y)                 :- grandchildOf(Y, X), male(X)             .
-greatGranddaughterOf(X, Y)       :- greatGrandchildOf(Y, X), female(X)      .
-greatGrandsonOf(X, Y)            :- greatGrandchildOf(Y, X), male(X)        .
-nieceOf(X, Y)                    :- nieceNephewOf(X, Y), female(X)          .
-nephewOf(X, Y)                   :- nieceNephewOf(X, Y), male(X)            .
+daughterOf(X, Y)                   :- childOf(Y, X), female(X)                  .
+sonOf(X, Y)                        :- childOf(Y, X), male(X)                    .
+granddaughterOf(X, Y)              :- grandchildOf(Y, X), female(X)             .
+grandsonOf(X, Y)                   :- grandchildOf(Y, X), male(X)               .
+greatGranddaughterOf(X, Y)         :- greatGrandchildOf(Y, X), female(X)        .
+greatGrandsonOf(X, Y)              :- greatGrandchildOf(Y, X), male(X)          .
+nieceOf(X, Y)                      :- nieceNephewOf(X, Y), female(X)            .
+nephewOf(X, Y)                     :- nieceNephewOf(X, Y), male(X)              .
 
 
 %%%%%%%% DEFAULT NEGATION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-~parentOf(X, Y)                   :- not parentOf(X, Y)                   , person(X), person(Y) .
-~grandparentOf(X, Y)              :- not grandparentOf(X, Y)              , person(X), person(Y) .
-~greatGrandparentOf(X, Y)         :- not greatGrandparentOf(X, Y)         , person(X), person(Y) .
-~auntUncleOf(X, Y)                :- not auntUncleOf(X, Y)                , person(X), person(Y) .
-~greatAuntUncleOf(X, Y)           :- not greatAuntUncleOf(X, Y)           , person(X), person(Y) .
-~secondAuntUncleOf(X, Y)          :- not secondAuntUncleOf(X, Y)          , person(X), person(Y) .
-~childOf(X, Y)                    :- not childOf(X, Y)                    , person(X), person(Y) .
-~grandchildOf(X, Y)               :- not grandchildOf(X, Y)               , person(X), person(Y) .
-~greatGrandchildOf(X, Y)          :- not greatGrandchildOf(X, Y)          , person(X), person(Y) .
-~nieceNephewOf(X, Y)              :- not nieceNephewOf(X, Y)              , person(X), person(Y) .
-~siblingOf(X, Y)                  :- not siblingOf(X, Y)                  , person(X), person(Y) .
-~cousinOf(X, Y)                   :- not cousinOf(X, Y)                   , person(X), person(Y) .
-~secondCousinOf(X, Y)             :- not secondCousinOf(X, Y)             , person(X), person(Y) .
-~firstCousinOnceRemoved(X, Y)     :- not firstCousinOnceRemoved(X, Y)     , person(X), person(Y) .
-~sisterOf(X, Y)                   :- not sisterOf(X, Y)                   , person(X), person(Y) .
-~brotherOf(X, Y)                  :- not brotherOf(X, Y)                  , person(X), person(Y) .
-~motherOf(X, Y)                   :- not motherOf(X, Y)                   , person(X), person(Y) .
-~fatherOf(X, Y)                   :- not fatherOf(X, Y)                   , person(X), person(Y) .
-~grandmotherOf(X, Y)              :- not grandmotherOf(X, Y)              , person(X), person(Y) .
-~grandfatherOf(X, Y)              :- not grandfatherOf(X, Y)              , person(X), person(Y) .
-~greatGrandmotherOf(X, Y)         :- not greatGrandmotherOf(X, Y)         , person(X), person(Y) .
-~greatGrandfatherOf(X, Y)         :- not greatGrandfatherOf(X, Y)         , person(X), person(Y) .
-~auntOf(X, Y)                     :- not auntOf(X, Y)                     , person(X), person(Y) .
-~uncleOf(X, Y)                    :- not uncleOf(X, Y)                    , person(X), person(Y) .
-~greatAuntOf(X, Y)                :- not greatAuntOf(X, Y)                , person(X), person(Y) .
-~greatUncleOf(X, Y)               :- not greatUncleOf(X, Y)               , person(X), person(Y) .
-~secondAuntOf(X, Y)               :- not secondAuntOf(X, Y)               , person(X), person(Y) .
-~secondUncleOf(X, Y)              :- not secondUncleOf(X, Y)              , person(X), person(Y) .
-~girlCousinOf(X, Y)               :- not girlCousinOf(X, Y)               , person(X), person(Y) .
-~boyCousinOf(X, Y)                :- not boyCousinOf(X, Y)                , person(X), person(Y) .
-~girlSecondCousinOf(X, Y)         :- not girlSecondCousinOf(X, Y)         , person(X), person(Y) .
-~boySecondCousinOf(X, Y)          :- not boySecondCousinOf(X, Y)          , person(X), person(Y) .
-~girlFirstCousinOnceRemoved(X, Y) :- not girlFirstCousinOnceRemoved(X, Y) , person(X), person(Y) .
-~boyFirstCousinOnceRemoved(X, Y)  :- not boyFirstCousinOnceRemoved(X, Y)  , person(X), person(Y) .
-~daughterOf(X, Y)                 :- not daughterOf(X, Y)                 , person(X), person(Y) .
-~sonOf(X, Y)                      :- not sonOf(X, Y)                      , person(X), person(Y) .
-~granddaughterOf(X, Y)            :- not granddaughterOf(X, Y)            , person(X), person(Y) .
-~grandsonOf(X, Y)                 :- not grandsonOf(X, Y)                 , person(X), person(Y) .
-~greatGranddaughterOf(X, Y)       :- not greatGranddaughterOf(X, Y)       , person(X), person(Y) .
-~greatGrandsonOf(X, Y)            :- not greatGrandsonOf(X, Y)            , person(X), person(Y) .
-~nieceOf(X, Y)                    :- not nieceOf(X, Y)                    , person(X), person(Y) .
-~nephewOf(X, Y)                   :- not nephewOf(X, Y)                   , person(X), person(Y) .
+~parentOf(X, Y)                     :- not parentOf(X, Y)                     , person(X), person(Y) .
+~grandparentOf(X, Y)                :- not grandparentOf(X, Y)                , person(X), person(Y) .
+~greatGrandparentOf(X, Y)           :- not greatGrandparentOf(X, Y)           , person(X), person(Y) .
+~auntUncleOf(X, Y)                  :- not auntUncleOf(X, Y)                  , person(X), person(Y) .
+~greatAuntUncleOf(X, Y)             :- not greatAuntUncleOf(X, Y)             , person(X), person(Y) .
+~secondAuntUncleOf(X, Y)            :- not secondAuntUncleOf(X, Y)            , person(X), person(Y) .
+~childOf(X, Y)                      :- not childOf(X, Y)                      , person(X), person(Y) .
+~grandchildOf(X, Y)                 :- not grandchildOf(X, Y)                 , person(X), person(Y) .
+~greatGrandchildOf(X, Y)            :- not greatGrandchildOf(X, Y)            , person(X), person(Y) .
+~nieceNephewOf(X, Y)                :- not nieceNephewOf(X, Y)                , person(X), person(Y) .
+~siblingOf(X, Y)                    :- not siblingOf(X, Y)                    , person(X), person(Y) .
+~cousinOf(X, Y)                     :- not cousinOf(X, Y)                     , person(X), person(Y) .
+~secondCousinOf(X, Y)               :- not secondCousinOf(X, Y)               , person(X), person(Y) .
+~firstCousinOnceRemovedOf(X, Y)     :- not firstCousinOnceRemovedOf(X, Y)     , person(X), person(Y) .
+~sisterOf(X, Y)                     :- not sisterOf(X, Y)                     , person(X), person(Y) .
+~brotherOf(X, Y)                    :- not brotherOf(X, Y)                    , person(X), person(Y) .
+~motherOf(X, Y)                     :- not motherOf(X, Y)                     , person(X), person(Y) .
+~fatherOf(X, Y)                     :- not fatherOf(X, Y)                     , person(X), person(Y) .
+~grandmotherOf(X, Y)                :- not grandmotherOf(X, Y)                , person(X), person(Y) .
+~grandfatherOf(X, Y)                :- not grandfatherOf(X, Y)                , person(X), person(Y) .
+~greatGrandmotherOf(X, Y)           :- not greatGrandmotherOf(X, Y)           , person(X), person(Y) .
+~greatGrandfatherOf(X, Y)           :- not greatGrandfatherOf(X, Y)           , person(X), person(Y) .
+~auntOf(X, Y)                       :- not auntOf(X, Y)                       , person(X), person(Y) .
+~uncleOf(X, Y)                      :- not uncleOf(X, Y)                      , person(X), person(Y) .
+~greatAuntOf(X, Y)                  :- not greatAuntOf(X, Y)                  , person(X), person(Y) .
+~greatUncleOf(X, Y)                 :- not greatUncleOf(X, Y)                 , person(X), person(Y) .
+~secondAuntOf(X, Y)                 :- not secondAuntOf(X, Y)                 , person(X), person(Y) .
+~secondUncleOf(X, Y)                :- not secondUncleOf(X, Y)                , person(X), person(Y) .
+~girlCousinOf(X, Y)                 :- not girlCousinOf(X, Y)                 , person(X), person(Y) .
+~boyCousinOf(X, Y)                  :- not boyCousinOf(X, Y)                  , person(X), person(Y) .
+~girlSecondCousinOf(X, Y)           :- not girlSecondCousinOf(X, Y)           , person(X), person(Y) .
+~boySecondCousinOf(X, Y)            :- not boySecondCousinOf(X, Y)            , person(X), person(Y) .
+~girlFirstCousinOnceRemovedOf(X, Y) :- not girlFirstCousinOnceRemovedOf(X, Y) , person(X), person(Y) .
+~boyFirstCousinOnceRemovedOf(X, Y)  :- not boyFirstCousinOnceRemovedOf(X, Y)  , person(X), person(Y) .
+~daughterOf(X, Y)                   :- not daughterOf(X, Y)                   , person(X), person(Y) .
+~sonOf(X, Y)                        :- not sonOf(X, Y)                        , person(X), person(Y) .
+~granddaughterOf(X, Y)              :- not granddaughterOf(X, Y)              , person(X), person(Y) .
+~grandsonOf(X, Y)                   :- not grandsonOf(X, Y)                   , person(X), person(Y) .
+~greatGranddaughterOf(X, Y)         :- not greatGranddaughterOf(X, Y)         , person(X), person(Y) .
+~greatGrandsonOf(X, Y)              :- not greatGrandsonOf(X, Y)              , person(X), person(Y) .
+~nieceOf(X, Y)                      :- not nieceOf(X, Y)                      , person(X), person(Y) .
+~nephewOf(X, Y)                     :- not nephewOf(X, Y)                     , person(X), person(Y) .
