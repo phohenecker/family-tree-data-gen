@@ -409,7 +409,7 @@ class Generator(object):
                 # reset person factory
                 pf.PersonFactory.reset()
 
-                with util.Timer("finished in"):
+                with util.Timer("finished"):
                     
                     # sample family tree
                     print("sampling family tree", end="")
