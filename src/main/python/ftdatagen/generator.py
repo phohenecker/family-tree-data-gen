@@ -289,7 +289,7 @@ class Generator(object):
                 current_person.parents.append(dad)
     
             # stop adding people of maximum number has been reached
-            if p >= conf.max_tree_size:
+            if p >= conf.max_tree_size or (conf.stop_prob > 0 and random.random() < conf.stop_prob):
                 break
 
         return fam_tree

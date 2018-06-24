@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+import numbers
 import os
 import random
 import typing
@@ -60,6 +61,9 @@ class Config(object):
 
     DEFAULT_QUIET = False
     """bool: Default value for :attr:`quiet`."""
+    
+    DEFAULT_STOP_PROB = 0.0
+    """float: Default value of :attr:`stop_prob`."""
 
     #  CONSTRUCTOR  ####################################################################################################
 
@@ -72,6 +76,7 @@ class Config(object):
         self._output_dir = self.DEFAULT_OUTPUT_DIR
         self._quiet = self.DEFAULT_QUIET
         self._seed = random.randrange(100000)  # -> we randomly generate a default seed to ensure reproducibility
+        self._stop_prob = self.DEFAULT_STOP_PROB
 
     #  PROPERTIES  #####################################################################################################
 
@@ -150,3 +155,14 @@ class Config(object):
     def seed(self, seed: int) -> None:
         insanity.sanitize_type("seed", seed, int)
         self._seed = seed
+    
+    @property
+    def stop_prob(self) -> float:
+        """float: The probability of stopping to further extend a family tree after a person has been added."""
+        return self._stop_prob
+    
+    @stop_prob.setter
+    def stop_prob(self, stop_prob: numbers.Real) -> None:
+        insanity.sanitize_type("stop_prob", stop_prob, numbers.Real)
+        insanity.sanitize_range("stop_prob", stop_prob, minimum=0, maximum=1, max_inclusive=False)
+        self._stop_prob = float(stop_prob)
