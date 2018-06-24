@@ -396,6 +396,7 @@ class Generator(object):
         sample_name_pattern = "{:0" + str(len(str(conf.num_samples - 1))) + "d}"
         
         # numerous counters for computing data statistics
+        tree_size_counts = [0] * (conf.max_tree_size + 2)  # +2 rather than +1 -> adding of spouses
         inferences_pos_relation_counts = {r: 0 for r in cls.RELATIONS}
         inferences_neg_relation_counts = {r: 0 for r in cls.RELATIONS}
         
@@ -430,6 +431,7 @@ class Generator(object):
                     print(" OK ({:.3f}s) | ".format(t.total), end="")
                     
                     # update statistics
+                    tree_size_counts[len(family_tree)] += 1
                     for i in data.inferences:
                         if len(i.terms) == 2 and i.predicate in cls.RELATIONS:
                             if i.positive:
@@ -439,8 +441,18 @@ class Generator(object):
         
         print()  # add an empty line to the output
         
+        # prepare tree-size-statistics for printing
+        title_format = "size={{:0{}d}}".format(len(str(conf.max_tree_size + 1)))
+        tree_size_counts = {
+                title_format.format(size): counts
+                for size, counts in enumerate(tree_size_counts)
+                if size > 1
+        }
+        
         # print statistics
-        print("INFERABLE RELATIONS\n")
+        print("DISTRIBUTION OF FAMILY TREE SIZES\n")
+        cls._print_distribution(tree_size_counts)
+        print("\nINFERABLE RELATIONS\n")
         cls._print_stats(inferences_pos_relation_counts, inferences_neg_relation_counts)
         print("\nDISTRIBUTION OF POSITIVE RELATION INFERENCES\n")
         cls._print_distribution(inferences_pos_relation_counts)
