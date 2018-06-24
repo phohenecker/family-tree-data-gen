@@ -296,11 +296,11 @@ class Generator(object):
 
     @classmethod
     def _write_sample(
-        cls,
-        conf: config.Config,
-        family_tree: typing.List[person.Person],
-        data: aspwrapper.AnswerSet,
-        base_name: str
+            cls,
+            conf: config.Config,
+            family_tree: typing.List[person.Person],
+            data: aspwrapper.AnswerSet,
+            base_name: str
     ) -> None:
         """Writes the provided sample as as knowledge graph to the disk.
         
