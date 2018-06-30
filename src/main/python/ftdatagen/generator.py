@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+import itertools
 import math
 import random
 import typing
@@ -233,30 +234,60 @@ class Generator(object):
                 All of the according parent-of relations are specified in terms of the provided instances.
         """
         # add first person to the family tree
-        fam_tree = [pf.PersonFactory.create_person()]
+        fam_tree = [pf.PersonFactory.create_person(conf.max_tree_depth)]
 
+        min_level = fam_tree[0].tree_level
+        max_level = fam_tree[0].tree_level
+        tree_depth = max_level - min_level
         p = 1
+        total_attempts = 0  # the total number of attempts to add a person to the family tree
         while True:
     
             # randomly choose a person from the tree
             current_person = random.choice(fam_tree)
+            
+            # determine whether it is possible to ad parents and children of the sampled person
+            can_add_parents = (
+                    not current_person.parents and
+                    (current_person.tree_level > min_level or tree_depth < conf.max_tree_depth)
+            )
+            can_add_children = (
+                    len(current_person.children) < conf.max_branching_factor and
+                    (current_person.tree_level < max_level or tree_depth < conf.max_tree_depth)
+            )
+            if can_add_children:
+                add_child = random.random() < (1.0 / max(1, len(current_person.children)))
+            
+            # decide what to do
+            add_parents = False
+            add_child = False
+            if can_add_parents and can_add_children:  # -> randomly add either a child or parents
+                if random.random() > 0.5:
+                    add_parents = True
+                else:
+                    add_child = True
+            elif can_add_parents:
+                add_parents = True
+            elif can_add_children:
+                add_child = True
     
-            # if the chosen person has parents already, then we add a child for it
-            # otherwise, we randomly add either a child or parents
-            if current_person.parents or random.random() > 0.5:  # -> add a child
+            if add_child:
         
                 # check whether the chosen person is married, if not -> add a partner
                 if current_person.married_to:
                     spouse = current_person.married_to
                 else:
-                    spouse = pf.PersonFactory.create_person(not current_person.female)
+                    spouse = pf.PersonFactory.create_person(
+                            current_person.tree_level + 1,
+                            female=not current_person.female
+                    )
                     spouse.married_to = current_person
                     current_person.married_to = spouse
                     fam_tree.append(spouse)
                     p += 1
         
                 # create child
-                child = pf.PersonFactory.create_person()
+                child = pf.PersonFactory.create_person(current_person.tree_level + 1)
                 child.parents.append(current_person)
                 child.parents.append(spouse)
                 fam_tree.append(child)
@@ -266,16 +297,16 @@ class Generator(object):
                 current_person.children.append(child)
                 spouse.children.append(child)
     
-            else:  # -> add parents
+            elif add_parents:
         
                 # create mother
-                mom = pf.PersonFactory.create_person(True)
+                mom = pf.PersonFactory.create_person(current_person.tree_level - 1, female=True)
                 mom.children.append(current_person)
                 fam_tree.append(mom)
                 p += 1
         
                 # create father
-                dad = pf.PersonFactory.create_person(False)
+                dad = pf.PersonFactory.create_person(current_person.tree_level - 1, female=False)
                 dad.children.append(current_person)
                 fam_tree.append(dad)
                 p += 1
@@ -287,9 +318,21 @@ class Generator(object):
                 # specify parents of chosen person
                 current_person.parents.append(mom)
                 current_person.parents.append(dad)
+            
+            # update bookkeeping variables
+            total_attempts += 1
+            if add_parents:
+                min_level = min(min_level, current_person.tree_level - 1)
+            elif add_child:
+                max_level = max(max_level, current_person.tree_level + 1)
+            tree_depth = max_level - min_level
     
             # stop adding people of maximum number has been reached
-            if p >= conf.max_tree_size or (conf.stop_prob > 0 and random.random() < conf.stop_prob):
+            if (
+                    p >= conf.max_tree_size or
+                    total_attempts >= conf.max_tree_size * 10 or
+                    (conf.stop_prob > 0 and random.random() < conf.stop_prob)
+            ):
                 break
 
         return fam_tree
@@ -397,6 +440,7 @@ class Generator(object):
         
         # numerous counters for computing data statistics
         tree_size_counts = [0] * (conf.max_tree_size + 2)  # +2 rather than +1 -> adding of spouses
+        total_relations_counts = [0] * (conf.max_branching_factor ** conf.max_tree_depth)
         inferences_pos_relation_counts = {r: 0 for r in cls.RELATIONS}
         inferences_neg_relation_counts = {r: 0 for r in cls.RELATIONS}
         
@@ -432,6 +476,7 @@ class Generator(object):
                     
                     # update statistics
                     tree_size_counts[len(family_tree)] += 1
+                    total_relations_counts[sum((len(p.children) for p in family_tree))] += 1
                     for i in data.inferences:
                         if len(i.terms) == 2 and i.predicate in cls.RELATIONS:
                             if i.positive:
@@ -448,10 +493,21 @@ class Generator(object):
                 for size, counts in enumerate(tree_size_counts)
                 if size > 1
         }
+
+        # prepare total-number-of-relations-statistics for printing
+        max_relations = max((size for size, counts in enumerate(total_relations_counts) if counts > 0))
+        title_format = "#relations={{:0{}d}}".format(len(str(max_relations)))
+        total_relations_counts = {
+                title_format.format(size): counts
+                for size, counts in enumerate(total_relations_counts)
+                if size <= max_relations
+        }
         
         # print statistics
         print("DISTRIBUTION OF FAMILY TREE SIZES\n")
         cls._print_distribution(tree_size_counts)
+        print("\nDISTRIBUTION OF TOTAL NUMBER OF RELATIONS PER SAMPLE\n")
+        cls._print_distribution(total_relations_counts)
         print("\nINFERABLE RELATIONS\n")
         cls._print_stats(inferences_pos_relation_counts, inferences_neg_relation_counts)
         print("\nDISTRIBUTION OF POSITIVE RELATION INFERENCES\n")

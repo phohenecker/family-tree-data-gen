@@ -71,4 +71,8 @@ class Person(base_individual.BaseIndividual, metaclass=abc.ABCMeta):
     def parents(self) -> typing.List["Person"]:
         """list[Person]: The parents of a ``Person``."""
         pass
-
+    
+    @property
+    @abc.abstractmethod
+    def tree_level(self) -> int:
+        """int: The level in the family tree where a ``Person`` is located."""

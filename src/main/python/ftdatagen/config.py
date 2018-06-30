@@ -50,7 +50,13 @@ class Config(object):
     DEFAULT_DLV = "src/main/resources/dlv.i386-apple-darwin.bin"
     """str: Default value for :attr:`dlv`."""
     
-    DEFAULT_MAX_TREE_SIZE = 48
+    DEFAULT_MAX_BRANCHING_FACTOR = 5
+    """int: Default value of :attr:`max_branching_factor`."""
+    
+    DEFAULT_MAX_TREE_DEPTH = 5
+    """int: Default value of :attr:`max_tree_depth`."""
+    
+    DEFAULT_MAX_TREE_SIZE = 26
     """int: Default value of :attr:`max_tree_size`."""
     
     DEFAULT_NEGATIVE_FACTS = False
@@ -70,6 +76,8 @@ class Config(object):
     def __init__(self):
         """Creates a new instance of ``Config``."""
         self._dlv = self.DEFAULT_DLV
+        self._max_branching_factor = self.DEFAULT_MAX_BRANCHING_FACTOR
+        self._max_tree_depth = self.DEFAULT_MAX_TREE_DEPTH
         self._max_tree_size = self.DEFAULT_MAX_TREE_SIZE
         self._negative_facts = self.DEFAULT_NEGATIVE_FACTS
         self._num_samples = None
@@ -79,7 +87,7 @@ class Config(object):
         self._stop_prob = self.DEFAULT_STOP_PROB
 
     #  PROPERTIES  #####################################################################################################
-
+    
     @property
     def dlv(self) -> str:
         """str: The path to the DLV executable, which may be relative to any location in PATH.
@@ -95,6 +103,28 @@ class Config(object):
         if not os.path.isfile(dlv):
             raise ValueError("The provided path <dlv> does not exist: '{}'!".format(dlv))
         self._dlv = dlv
+
+    @property
+    def max_branching_factor(self) -> int:
+        """int: The maximum number of children that any person in a family tree may have."""
+        return self._max_branching_factor
+
+    @max_branching_factor.setter
+    def max_branching_factor(self, max_branching_factor: int) -> None:
+        insanity.sanitize_type("max_branching_factor", max_branching_factor, int)
+        insanity.sanitize_range("max_branching_factor", max_branching_factor, minimum=1)
+        self._max_branching_factor = max_branching_factor
+    
+    @property
+    def max_tree_depth(self) -> int:
+        """int: The maximum depth that a family tree may have."""
+        return self._max_tree_depth
+    
+    @max_tree_depth.setter
+    def max_tree_depth(self, max_tree_depth: int) -> None:
+        insanity.sanitize_type("max_tree_depth", max_tree_depth, int)
+        insanity.sanitize_range("max_tree_depth", max_tree_depth, minimum=1)
+        self._max_tree_depth = max_tree_depth
     
     @property
     def max_tree_size(self) -> int:

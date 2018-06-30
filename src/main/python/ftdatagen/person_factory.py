@@ -178,13 +178,17 @@ class PersonFactory(object):
             cls.reset()
     
     @classmethod
-    def create_person(cls, female: bool=None) -> person.Person:
+    def create_person(cls, tree_level: int, female: bool=None) -> person.Person:
         """Constructs a new instance of :class:`person.Person`.
 
         Args:
+            tree_level (int): The level in the family tree on which the created person is located.
             female (bool, optional): Indicates whether the created person is female. If not provided, then the gender
                 is sampled randomly.
         """
+        # sanitize args
+        insanity.sanitize_type("tree_level", tree_level, int)
+        
         # prepare context if necessary
         cls._prepare_context()
         
@@ -226,7 +230,11 @@ class PersonFactory(object):
                 ctx[cls._REMAINING_MALE_NAMES] = [n + postfix for n in cls.MALE_NAMES]
         
         # return new person
-        return individual_factory.IndividualFactory.create_individual(name, target_type=_Person, args=[female])
+        return individual_factory.IndividualFactory.create_individual(
+                name,
+                target_type=_Person,
+                args=[female, tree_level]
+        )
     
     @classmethod
     def reset(cls) -> None:
@@ -244,7 +252,7 @@ class PersonFactory(object):
 class _Person(person.Person):
     """A private implementation of :class:`person.Person`."""
     
-    def __init__(self, index: int, name: str, female: bool):
+    def __init__(self, index: int, name: str, female: bool, tree_level: int):
         base_individual.BaseIndividual.__init__(self)
         
         self._children = []
@@ -253,6 +261,7 @@ class _Person(person.Person):
         self._married_to = None
         self._name = name
         self._parents = []
+        self._tree_level = tree_level
     
     #  MAGIC FUNCTIONS  ################################################################################################
     
@@ -288,3 +297,7 @@ class _Person(person.Person):
     @property
     def parents(self) -> typing.List[person.Person]:
         return self._parents
+    
+    @property
+    def tree_level(self) -> int:
+        return self._tree_level
