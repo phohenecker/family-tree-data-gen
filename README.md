@@ -70,7 +70,7 @@ environment:
 3. Run the Python application:
 
    ```
-   (family-tree-data-gen)$ ./run-data-gen.sh [OPTIONS]
+   (family-tree-data-gen)$ ./run-data-gen.sh [ARGS]
    ```
 
 For a detailed description of how to invoke the data generator and all options that may be provided to the same, refer
@@ -83,7 +83,8 @@ This is printed, if the application is launched with flag `--help` and `-h`, res
 
 **Important:**
 There are numerous options available, which allow for adjusting the generation process.
-Only one of them is required, though, which is described in the next section: `--dlv`.
+However, while all of these have default values, there is one positional arg that needs to be provided.
+This is described in the next section.
 
 
 The DLV System
@@ -93,10 +94,10 @@ The family tree data generator makes use of the DLV system in order to perform s
 means of the ontology mentioned above.
 Therefore, you have to download the DLV executable for your platform from the
 [official website](http://www.dlvsystem.com/dlv/#1),
-and provide the path to the same via option `--dlv`:
+and provide the path to the same as (the only) positional arg:
 
 ```
-(family-tree-data-gen)$ ./run-data-gen.sh --dlv /path/to/dlv [OTHER OPTIONS]
+(family-tree-data-gen)$ ./run-data-gen.sh [OPTIONS] /path/to/dlv
 ```
 
 Notice that DLV is free for academic and non-commercial educational use.
