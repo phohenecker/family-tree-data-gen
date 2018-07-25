@@ -34,7 +34,6 @@ dependencies:
   - pip:
     - insanity>=2017.1
     - streamtologger>=2017.1
-    - git+https://github.com/phohenecker/asp-wrapper
     - git+https://github.com/phohenecker/arg-magic
-    - git+ssh://git@git.paho.at:22022/phohenecker/ml-base.git
-    - git+ssh://git@git.paho.at:22022/phohenecker/rel-data.git
+    - git+https://github.com/phohenecker/asp-wrapper
+    - git+https://github.com/phohenecker/rel-data
