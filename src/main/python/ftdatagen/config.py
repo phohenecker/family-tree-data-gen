@@ -46,9 +46,6 @@ __status__ = "Development"
 
 class Config(object):
     """Encapsulates the user-defined configuration."""
-
-    DEFAULT_DLV = "src/main/resources/dlv.i386-apple-darwin.bin"
-    """str: Default value for :attr:`dlv`."""
     
     DEFAULT_MAX_BRANCHING_FACTOR = 5
     """int: Default value of :attr:`max_branching_factor`."""
@@ -75,7 +72,7 @@ class Config(object):
 
     def __init__(self):
         """Creates a new instance of ``Config``."""
-        self._dlv = self.DEFAULT_DLV
+        self._dlv = None
         self._max_branching_factor = self.DEFAULT_MAX_BRANCHING_FACTOR
         self._max_tree_depth = self.DEFAULT_MAX_TREE_DEPTH
         self._max_tree_size = self.DEFAULT_MAX_TREE_SIZE
