@@ -58,6 +58,9 @@ class Config(object):
     
     DEFAULT_NEGATIVE_FACTS = False
     """bool: Default value of :attr:`negative_facts`."""
+    
+    DEFAULT_NUM_SAMPLES = 5000
+    """int: Default value of :attr:`num_samples`."""
 
     DEFAULT_OUTPUT_DIR = "./out"
     """str: Default value for :attr:`output_dir`."""
@@ -77,7 +80,7 @@ class Config(object):
         self._max_tree_depth = self.DEFAULT_MAX_TREE_DEPTH
         self._max_tree_size = self.DEFAULT_MAX_TREE_SIZE
         self._negative_facts = self.DEFAULT_NEGATIVE_FACTS
-        self._num_samples = None
+        self._num_samples = self.DEFAULT_NUM_SAMPLES
         self._output_dir = self.DEFAULT_OUTPUT_DIR
         self._quiet = self.DEFAULT_QUIET
         self._seed = random.randrange(100000)  # -> we randomly generate a default seed to ensure reproducibility
