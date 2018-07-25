@@ -90,7 +90,7 @@ class Config(object):
     
     @property
     def dlv(self) -> str:
-        """str: The path to the DLV executable, which may be relative to any location in PATH.
+        """str: The path to the DLV executable.
 
         DLV is an answer-set reasoner that is used for generating some of the datasets
         (`http://www.dlvsystem.com/dlv/`_).
