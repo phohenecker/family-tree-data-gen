@@ -52,7 +52,11 @@ __status__ = "Development"
 APP_NAME = "run-data-gen.sh"
 """str: The name that is displayed in the synopsis of this application."""
 
-APP_DESCRIPTION = "TODO"  # TODO
+APP_DESCRIPTION = (
+        "This is a tool for generating datasets of reasoning tasks about family trees. "
+        "For additional details, have a look at the project repository at "
+        "https://github.com/phohenecker/family-tree-data-gen."
+)
 """str: The description that is displayed in this application's help text."""
 
 LOG_FILE_HEADER = "[{timestamp:%Y-%m-%d %H:%M:%S} - {level:6}]  "
