@@ -13,8 +13,8 @@ experiments reported in the same:
 
 You are very welcome to use the generator for creating data for your own research.
 However, in this case, please make sure to cite the paper above.
-For any questions about the paper or the code provided here, feel free to contact us via e-mail:
-[patrick.hohenecker@cs.ox.ac.uk](mailto:patrick.hohenecker@cs.ox.ac.uk).
+For any questions about the paper or the code provided here, feel free to contact us via
+[e-mail](mailto:patrick.hohenecker@cs.ox.ac.uk).
 
 **Notice:**
 Any data created by the family tree data generator are written to the disk in the *rel-data* format, which is specified
