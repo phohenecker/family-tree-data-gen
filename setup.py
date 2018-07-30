@@ -53,7 +53,6 @@ setup(
                 ("src/main/asp", ["ontology.asp"])
         ],
         description="A dataset generator for family tree data.",
-        download_url="https://github.com/phohenecker/family-tree-data-gen/archive/v2018.1.tar.gz",
         install_requires=[
                 "argmagic>=2017.1",
                 "aspwrapper>=2018.1",
