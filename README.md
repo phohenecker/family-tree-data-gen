@@ -8,8 +8,8 @@ It has been created as part of the work for the following paper, and was used to
 experiments reported in the same:
 
 > Patrick Hohenecker and Thomas Lukasiewicz.  
-> Deep Learning for Ontology Reasoning.  
-> Preprint at [https://arxiv.org/abs/1705.10342](https://arxiv.org/abs/1705.10342), 2018.
+> Ontology Reasoning with Deep Neural Networks.  
+> Preprint at [https://arxiv.org/abs/1808.07980](https://arxiv.org/abs/1808.07980) (2018).
 
 You are very welcome to use the generator for creating data for your own research.
 However, in this case, please make sure to cite the paper above.
