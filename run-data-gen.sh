@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Simplified BSD License
+# 2-Clause BSD License
 #
 # Copyright (c) 2018, Patrick Hohenecker
 # All rights reserved.

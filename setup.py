@@ -30,7 +30,7 @@ __copyright__ = (
         "(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n"
         "SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
 )
-__license__ = "Simplified BSD License"
+__license__ = "BSD-2-Clause"
 __version__ = "2018.1"
 __date__ = "May 28, 2018"
 __maintainer__ = "Patrick Hohenecker"
@@ -60,7 +60,7 @@ setup(
                 "reldata>=2017.1",
                 "streamtologger>=2017.1"
         ],
-        license="Simplified BSD License",
+        license="BSD-2-Clause",
         long_description=long_description,
         name="ftdatagen",
         package_dir={"": "src/main/python"},
