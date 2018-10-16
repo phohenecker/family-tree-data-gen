@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
 
-import itertools
 import math
 import random
+import time
 import typing
 
 import aspwrapper
 
-from mlbase import util
 from reldata import data_context as dc
 from reldata.data import class_membership
 from reldata.data import knowledge_graph
@@ -454,35 +453,37 @@ class Generator(object):
                 # reset person factory
                 pf.PersonFactory.reset()
 
-                with util.Timer("finished"):
+                total_start = time.time()
                     
-                    # sample family tree
-                    print("sampling family tree", end="")
-                    with util.Timer("", skip_output=True) as t:
-                        family_tree = cls._sample_family_tree(conf)
-                    print(" OK ({:.3f}s)".format(t.total), end="")
-            
-                    # run ASP solver to compute all inferences
-                    print(" | computing inferences", end="")
-                    with util.Timer("", skip_output=True) as t:
-                        data = cls._run_asp_solver(conf, family_tree)
-                    print(" OK ({:.3f}s)".format(t.total), end="")
+                # sample family tree
+                print("sampling family tree", end="")
+                start = time.time()
+                family_tree = cls._sample_family_tree(conf)
+                print(" OK ({:.3f}s)".format(time.time() - start), end="")
         
-                    # write sample to disk
-                    print(" | writing to disk", end="")
-                    with util.Timer("", skip_output=True) as t:
-                        cls._write_sample(conf, family_tree, data, sample_name_pattern.format(sample_idx))
-                    print(" OK ({:.3f}s) | ".format(t.total), end="")
-                    
-                    # update statistics
-                    tree_size_counts[len(family_tree)] += 1
-                    total_relations_counts[sum((len(p.children) for p in family_tree))] += 1
-                    for i in data.inferences:
-                        if len(i.terms) == 2 and i.predicate in cls.RELATIONS:
-                            if i.positive:
-                                inferences_pos_relation_counts[i.predicate] += 1
-                            else:
-                                inferences_neg_relation_counts[i.predicate] += 1
+                # run ASP solver to compute all inferences
+                print(" | computing inferences", end="")
+                start = time.time()
+                data = cls._run_asp_solver(conf, family_tree)
+                print(" OK ({:.3f}s)".format(time.time() - start), end="")
+    
+                # write sample to disk
+                print(" | writing to disk", end="")
+                start = time.time()
+                cls._write_sample(conf, family_tree, data, sample_name_pattern.format(sample_idx))
+                print(" OK ({:.3f}s) | ".format(time.time() - start), end="")
+                
+                # update statistics
+                tree_size_counts[len(family_tree)] += 1
+                total_relations_counts[sum((len(p.children) for p in family_tree))] += 1
+                for i in data.inferences:
+                    if len(i.terms) == 2 and i.predicate in cls.RELATIONS:
+                        if i.positive:
+                            inferences_pos_relation_counts[i.predicate] += 1
+                        else:
+                            inferences_neg_relation_counts[i.predicate] += 1
+                
+                print("finished in {:.3f}s".format(time.time() - total_start))
         
         print()  # add an empty line to the output
         

@@ -10,8 +10,6 @@ import random
 import argmagic
 import streamtologger
 
-from mlbase import util
-
 from ftdatagen import config
 from ftdatagen import generator
 
@@ -66,6 +64,32 @@ LOG_FILE_NAME = "out.log"
 """str: The name of the log file."""
 
 
+def _print_config(conf: config.Config) -> None:
+    """Prints the provided configuration as table to the screen.
+
+    Args:
+        conf (:class:`config.Config`): The configuration to print.
+    """
+    # parse and sort the config into (name, value) pairs
+    str_conf = sorted(argmagic.get_config(conf).items(), key=lambda x: x[0])
+    
+    # compute the maximum (string) lengths of all names and values, respectively
+    max_name_len = max((len(n) for n, _ in str_conf))
+    max_value_len = max((len(v) for _, v in str_conf))
+    
+    # assemble a horizontal separator
+    h_line = "=" * (max_name_len + max_value_len + 3)
+    
+    # print the config to the screen
+    print(h_line)
+    print("CONFIGURATION")
+    print(h_line)
+    for name, value in str_conf:
+        print(("{:" + str(max_name_len) + "} : {}").format(name, value))
+    print(h_line)
+    print()
+
+
 def main(conf: config.Config):
     
     # create output directory if it does not exist yet
@@ -84,8 +108,7 @@ def main(conf: config.Config):
     random.seed(conf.seed)
     
     # print user-defined configuration to screen
-    print(util.Table().create_table(argmagic.get_config(conf), title="Configuration"))
-    print()
+    _print_config(conf)
     
     # run generator
     generator.Generator.generate(conf)
