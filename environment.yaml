@@ -33,6 +33,7 @@ dependencies:
   - python>=3.6
   - pip:
     - insanity>=2017.1
+    - networkx>=2.3
     - streamtologger>=2017.1
     - git+https://github.com/phohenecker/arg-magic
     - git+https://github.com/phohenecker/asp-wrapper
