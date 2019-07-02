@@ -255,8 +255,6 @@ class Generator(object):
                     len(current_person.children) < conf.max_branching_factor and
                     (current_person.tree_level < max_level or tree_depth < conf.max_tree_depth)
             )
-            if can_add_children:
-                add_child = random.random() < (1.0 / max(1, len(current_person.children)))
             
             # decide what to do
             add_parents = False
