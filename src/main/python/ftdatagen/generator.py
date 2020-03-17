@@ -7,6 +7,7 @@ import time
 import typing
 
 import aspwrapper
+import networkx as nx
 
 from reldata import data_context as dc
 from reldata.data import class_membership
@@ -254,8 +255,6 @@ class Generator(object):
                     len(current_person.children) < conf.max_branching_factor and
                     (current_person.tree_level < max_level or tree_depth < conf.max_tree_depth)
             )
-            if can_add_children:
-                add_child = random.random() < (1.0 / max(1, len(current_person.children)))
             
             # decide what to do
             add_parents = False
@@ -443,12 +442,15 @@ class Generator(object):
         inferences_pos_relation_counts = {r: 0 for r in cls.RELATIONS}
         inferences_neg_relation_counts = {r: 0 for r in cls.RELATIONS}
         
+        # create list for storing graph representations of all created samples (for checking isomorphism)
+        sample_graphs = []
+        
         for sample_idx in range(conf.num_samples):
             
             print("creating sample #{}: ".format(sample_idx), end="")
             
             # use a fresh data context
-            with dc.DataContext():
+            with dc.DataContext() as data_ctx:
                 
                 # reset person factory
                 pf.PersonFactory.reset()
@@ -458,7 +460,30 @@ class Generator(object):
                 # sample family tree
                 print("sampling family tree", end="")
                 start = time.time()
-                family_tree = cls._sample_family_tree(conf)
+                done = False
+                while not done:
+                    
+                    # randomly sample a tree
+                    family_tree = cls._sample_family_tree(conf)
+                    
+                    # create a graph that represents the structure of the created sample for checking isomorphism
+                    current_graph = nx.DiGraph()
+                    for p in family_tree:
+                        for parent in p.parents:
+                            current_graph.add_edge(p.index, parent.index)
+                        if p.married_to is not None:
+                            current_graph.add_edge(p.index, p.married_to.index)
+                    
+                    # check whether the new sample is isomorphic to any sample created earlier
+                    for existing_sample in sample_graphs:
+                        if nx.is_isomorphic(existing_sample, current_graph):
+                            data_ctx.clear()
+                            pf.PersonFactory.reset()
+                            break
+                    else:
+                        sample_graphs.append(current_graph)
+                        done = True
+                    
                 print(" OK ({:.3f}s)".format(time.time() - start), end="")
         
                 # run ASP solver to compute all inferences

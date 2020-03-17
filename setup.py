@@ -57,6 +57,7 @@ setup(
                 "argmagic>=2017.1",
                 "aspwrapper>=2018.1",
                 "insanity>=2017.1",
+                "networkx>=2.3",
                 "reldata>=2017.1",
                 "streamtologger>=2017.1"
         ],
