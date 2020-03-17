@@ -450,7 +450,7 @@ class Generator(object):
             print("creating sample #{}: ".format(sample_idx), end="")
             
             # use a fresh data context
-            with dc.DataContext():
+            with dc.DataContext() as data_ctx:
                 
                 # reset person factory
                 pf.PersonFactory.reset()
@@ -477,6 +477,8 @@ class Generator(object):
                     # check whether the new sample is isomorphic to any sample created earlier
                     for existing_sample in sample_graphs:
                         if nx.is_isomorphic(existing_sample, current_graph):
+                            data_ctx.clear()
+                            pf.PersonFactory.reset()
                             break
                     else:
                         sample_graphs.append(current_graph)
