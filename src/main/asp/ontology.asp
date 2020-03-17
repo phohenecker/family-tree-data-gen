@@ -106,12 +106,12 @@ boySecondCousinOf(X, Y)            :- secondCousinOf(X, Y), male(X)             
 girlFirstCousinOnceRemovedOf(X, Y) :- firstCousinOnceRemovedOf(X, Y), female(X) .
 boyFirstCousinOnceRemovedOf(X, Y)  :- firstCousinOnceRemovedOf(X, Y), male(X)   .
 
-daughterOf(X, Y)                   :- childOf(Y, X), female(X)                  .
-sonOf(X, Y)                        :- childOf(Y, X), male(X)                    .
-granddaughterOf(X, Y)              :- grandchildOf(Y, X), female(X)             .
-grandsonOf(X, Y)                   :- grandchildOf(Y, X), male(X)               .
-greatGranddaughterOf(X, Y)         :- greatGrandchildOf(Y, X), female(X)        .
-greatGrandsonOf(X, Y)              :- greatGrandchildOf(Y, X), male(X)          .
+daughterOf(X, Y)                   :- childOf(X, Y), female(X)                  .
+sonOf(X, Y)                        :- childOf(X, Y), male(X)                    .
+granddaughterOf(X, Y)              :- grandchildOf(X, Y), female(X)             .
+grandsonOf(X, Y)                   :- grandchildOf(X, Y), male(X)               .
+greatGranddaughterOf(X, Y)         :- greatGrandchildOf(X, Y), female(X)        .
+greatGrandsonOf(X, Y)              :- greatGrandchildOf(X, Y), male(X)          .
 nieceOf(X, Y)                      :- nieceNephewOf(X, Y), female(X)            .
 nephewOf(X, Y)                     :- nieceNephewOf(X, Y), male(X)              .
 
